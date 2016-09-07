@@ -1,0 +1,156 @@
+Turbo Assembler	 Version 3.2	    12/11/09 10:37:38	    Page 1
+FechaNac.asm
+
+
+
+      1	0000			     .MODEL small
+      2	0000			     .STACK 100h
+      3
+      4	0000			     .DATA
+      5	0000  0A 0D 49 6E 67 72	65+	     inv1   DB	    10,13,'Ingrese su fecha de nacimiento en formato dd/mm/aaaa',10,13,'$'
+      6	      73 65 20 73 75 20	66+
+      7	      65 63 68 61 20 64	65+
+      8	      20 6E 61 63 69 6D	69+
+      9	      65 6E 74 6F 20 65	6E+
+     10	      20 66 6F 72 6D 61	74+
+     11	      6F 20 64 64 2F 6D	6D+
+     12	      2F 61 61 61 61 0A	0D+
+     13	      24
+     14	0039  0B ?? 0B*(??)		     fecha  DB	    11,?,11 DUP(?)
+     15	0046  ??			     Mes    DB	    ?
+     16	0047  45 6E 65 72 6F 20	46+	     Meses  DB	    'Enero Febrero Mazo	Abril Mayo Junio Julio Agosto Septiempbre Octubre   +
+     17	      65 62 72 65 72 6F	20+  Noviembre Diciembre',10,13,'$'
+     18	      4D 61 7A 6F 20 41	62+
+     19	      72 69 6C 20 4D 61	79+
+     20	      6F 20 4A 75 6E 69	6F+
+     21	      20 4A 75 6C 69 6F	20+
+     22	      41 67 6F 73 74 6F	20+
+     23	      53 65 70 74 69 65	6D+
+     24	      70 62 72 65 20 4F	63+
+     25	      74 75 62 72 65 20	4E+
+     26	      6F 76 69 65 6D 62	72+
+     27	      65 20 44 69 63 69	65+
+     28	      6D 62 72 65 0A 0D	24
+     29	00A2  00			     AA	    DB	    0
+     30	00A3  07D9			     añoAct DW	    2009
+     31	00A5  ??			     añoNac DB	    ?
+     32	00A6  0A 0D 55 73 74 65	64+	     sal1   DB	    10,13,'Usted Nacio en ','$';Mes
+     33	      20 4E 61 63 69 6F	20+
+     34	      65 6E 20 24
+     35	00B8  20 79 20 74 69 65	6E+	     sal2   DB	    ' y	tiene ','$' ;AA
+     36	      65 20 24
+     37	00C2  20 61 6E 6F 73 0A	0D+	     sal3   DB	    ' anos',10,13,'$'
+     38	      24
+     39	00CA  0A			     diez   DB	    10
+     40	00CB			     .CODE
+     41	0000  B8 0000s			     MOV AX,@DATA
+     42	0003  8E D8			     MOV DS,AX
+     43					     ;;;;;;;;;;;
+     44	0005  B4 09			     MOV AH, 09h  ;INVITA A QUE
+     45	0007  BA 0000r			     LEA DX, inv1 ;  INGRESE SU
+     46	000A  CD 21			     INT 21h	  ;  FECHA DE NACIMIENTO
+     47					     ;;;;;;;;;;;
+     48	000C  B4 0A			     MOV AH, 0Ah  ;CAPTURA
+     49	000E  BA 0039r			     LEA DX, fecha  ;  LA
+     50	0011  CD 21			     INT 21h	  ;  FECHA
+     51					     ;;;;;;;;;;;
+     52	0013  BB 0039r			     LEA BX, fecha
+     53	0016  8A 67 05			     MOV AH, [BX+5]
+     54	0019  8A 47 06			     MOV AL, [BX+6]
+     55	001C  2D 3030			     SUB AX, 3030h
+     56	001F  8B C8			     MOV CX, AX
+     57					     ;;;;;;;;;;;
+Turbo Assembler	 Version 3.2	    12/11/09 10:37:38	    Page 2
+FechaNac.asm
+
+
+
+     58	0021  BE 0048r			     LEA SI, Meses+1
+     59	0024  AD			     LODSW
+     60					     ;;;;;;;;;;;
+     61	0025  8B C8			     MOV CX, AX
+     62	0027  B4 09			     MOV AH, 09h
+     63	0029  8B D0			     MOV DX, AX
+     64	002B  CD 21			     INT 21h
+     65					     ;;;;;;;;;;;
+     66
+     67	002D  B4 09			     MOV AH, 09h
+     68	002F  BA 00A6r			     LEA DX, sal1
+     69	0032  CD 21			     INT 21h
+     70					     ;;;;;;;;;;;
+     71					     ;MOSTRAR MES
+     72					     ;MOV AL, CH
+     73					     ;AAM
+     74					     ;ADD AL, 30h
+     75					     ;MOV AH, 02h
+     76					     ;MOV DL, AL
+     77					     ;INT 21h
+     78					     ;MOV AL, CL
+     79					     ;AAM
+     80					     ;ADD AL, 30h
+     81					     ;MOV AH, 02h
+     82					     ;MOV DL, AL
+     83					     ;INT 21h
+     84					     ;;;;;;;;;;;
+     85	0034  B4 09			     MOV AH, 09h
+     86	0036  BA 00B8r			     LEA DX, sal2
+     87	0039  CD 21			     INT 21h
+     88					     ;;;;;;;;;;;;
+     89					     ;MOSTRAR EDAD
+     90					     ;MOV AH, 02h
+     91					     ;MOV DL,
+     92					     ;INT 21h
+     93					     ;;;;;;;;;;;;
+     94	003B  B4 09			     MOV AH, 09h
+     95	003D  BA 00C2r			     LEA DX, sal3
+     96	0040  CD 21			     INT 21h
+     97					     ;;;;;;;;;;;
+     98	0042  B4 01			     MOV AH, 01h
+     99	0044  CD 21			     INT 21h
+    100					     ;;;;;;;;;;;
+    101	0046  B4 4C			     MOV AH,4ch
+    102	0048  CD 21			     INT 21h
+    103				     END
+Turbo Assembler	 Version 3.2	    12/11/09 10:37:38	    Page 3
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/11/09"
+??FILENAME			  Text	 "FechaNac"
+??TIME				  Text	 "10:37:38"
+??VERSION			  Number 0314
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 FECHANAC
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+AA				  Byte	 DGROUP:00A2
+AñOACT				  Word	 DGROUP:00A3
+AñONAC				  Byte	 DGROUP:00A5
+DIEZ				  Byte	 DGROUP:00CA
+FECHA				  Byte	 DGROUP:0039
+INV1				  Byte	 DGROUP:0000
+MES				  Byte	 DGROUP:0046
+MESES				  Byte	 DGROUP:0047
+SAL1				  Byte	 DGROUP:00A6
+SAL2				  Byte	 DGROUP:00B8
+SAL3				  Byte	 DGROUP:00C2
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  00CB Word	  Public  DATA
+_TEXT				  16  004A Word	  Public  CODE
+

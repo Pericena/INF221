@@ -1,0 +1,63 @@
+     1                                  
+     2                                  ;%%%%%%%%%%%%%%%%%%%%%%%
+     3                                  ;assemble and link with 
+     4                                  ;nasm -f win32 -o P1.o P1.asm -l P1.lst
+     5                                  ;gcc -o P1.exe P1.o
+     6                                  ;%%%%%%%%%%%%%%%%%%%%%%%
+     7                                  ;---------------------------------------
+     8                                  
+     9                                  ;file:  P1.asm
+    10                                  
+    11                                  extern _printf, _scanf		
+    12                                  
+    13                                  segment .data
+    14 00000000 010002000300050007-     	vector dw 1,2,3,5,7,11,12,55,33,44
+    15 00000009 000B000C0037002100-
+    16 00000012 2C00               
+    17 00000014 0A                      	dim db 10
+    18                                  	
+    19 00000015 0600                    	n dw 6
+    20                                  segment .bss
+    21 00000000 <res 00000001>          	esprimo resb 1
+    22 00000001 <res 00000001>          	medio resb	1
+    23 00000002 <res 00000001>          	noprimo resb 1
+    24                                  segment .text 
+    25                                  
+    26                                  global _main 					
+    27                                  _main:
+    28                                  ;---------------------------------------	
+    29 00000000 31C9                    	xor ecx,ecx
+    30 00000002 31D2                    	xor edx,edx		;contar el vector
+    31 00000004 3A15[14000000]          	for:  cmp dl,[dim]
+    32 0000000A 7350                    		  jae exit
+    33 0000000C B901000000              			mov ecx,1
+    34 00000011 B302                    			mov bl,2
+    35                                  			;divide el numero entrante y lo pasa a dx
+    36 00000013 668B8412[00000000]      			mov ax,[vector + edx*2]
+    37 0000001B F6F3                    			div bl
+    38 0000001D A2[01000000]            			mov [medio],al
+    39 00000022 31C0                    			xor eax,eax
+    40                                  			;
+    41 00000024 B401                    			mov ah,1
+    42 00000026 3A1D[01000000]          			ciclo:  cmp bl,[medio]
+    43 0000002C 7714                    					ja salir
+    44 0000002E 668B8412[00000000]      					mov ax,[vector + edx *2]
+    45 00000036 F6F3                    					div bl
+    46 00000038 80FC00                  					cmp ah,0
+    47 0000003B 7405                    					jz salir
+    48 0000003D 41                      					inc ecx
+    49 0000003E 6643                    					inc bx
+    50 00000040 EBE4                    			jmp ciclo
+    51 00000042 80BC12[00000000]03      			salir: cmp byte[vector + edx*2],3
+    52 0000004A 7605                    					jbe primo	
+    53 0000004C 83F901                  					cmp ecx,1
+    54 0000004F 7408                    					jz incr
+    55                                  					;mov [noprimo],ah
+    56                                  					;jmp incr
+    57                                  			primo: ;mov[esprimo],ah
+    58 00000051 C68412[00000000]FF      			mov byte[vector + edx*2],0xff			
+    59 00000059 42                      			incr: inc edx
+    60 0000005A EBA8                    	jmp for
+    61 0000005C C3                      	exit:	ret
+    62                                  ;---------------------------------------
+    63                                  ;..........subrutina....................	

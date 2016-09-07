@@ -1,0 +1,65 @@
+     1                                  extern _printf,_scanf
+     2                                  segment .data
+     3 00000000 4FF2FFFF360300001F-     arreglo dd  -3505,822,31,5440,-803,-27,-11,09,23,-143,22,-1223,7127,-49,128,-55,-206,9983,10,-57,35,99,-100,99267,5313,967,-49
+     4 00000009 00000040150000DDFC-
+     5 00000012 FFFFE5FFFFFFF5FFFF-
+     6 0000001B FF0900000017000000-
+     7 00000024 71FFFFFF1600000039-
+     8 0000002D FBFFFFD71B0000CFFF-
+     9 00000036 FFFF80000000C9FFFF-
+    10 0000003F FF32FFFFFFFF260000-
+    11 00000048 0A000000C7FFFFFF23-
+    12 00000051 000000630000009CFF-
+    13 0000005A FFFFC3830100C11400-
+    14 00000063 00C7030000CFFFFFFF 
+    15 0000006C 696E6772657365206E-     msj db "ingrese n: ",0,10
+    16 00000075 3A20000A           
+    17 00000079 2564000A                formato db "%d",0,10
+    18 0000007D 656C206E756D65726F-     msj2 db "el numero mayor del arreglo es: %d"
+    19 00000086 206D61796F72206465-
+    20 0000008F 6C2061727265676C6F-
+    21 00000098 2065733A202564     
+    22                                  segment .bss
+    23 00000000 <res 00000001>          n resb 1
+    24 00000001 <res 00000004>          may resd 1
+    25                                  segment .text
+    26                                  global _main
+    27                                  _main:
+    28                                  
+    29 00000000 68[6C000000]            push msj
+    30 00000005 E8(00000000)            call _printf
+    31 0000000A 83C404                  add esp,4
+    32                                  
+    33 0000000D 68[00000000]            push n
+    34 00000012 68[79000000]            push formato
+    35 00000017 E8(00000000)            call _scanf
+    36 0000001C 83C408                  add esp,8
+    37                                  
+    38 0000001F 31C0                    xor eax,eax
+    39 00000021 A1[00000000]            mov eax,[n]
+    40 00000026 50                      push eax
+    41 00000027 68[00000000]            push arreglo
+    42 0000002C E81C000000              call mayor
+    43 00000031 A3[01000000]            mov [may],eax
+    44 00000036 83C408                  add esp,8
+    45                                  
+    46 00000039 FF35[01000000]          push dword[may]
+    47 0000003F 68[7D000000]            push msj2
+    48 00000044 E8(00000000)            call _printf
+    49 00000049 83C408                  add esp,8
+    50 0000004C C3                      ret
+    51                                  
+    52                                  mayor:
+    53 0000004D 55                      	push ebp
+    54 0000004E 89E5                    	mov ebp,esp
+    55 00000050 8B4D0C                  	mov ecx,[ebp+12]
+    56 00000053 8B5D08                  	mov ebx,[ebp+8]
+    57 00000056 B800000000              	mov eax,0
+    58 0000005B 3903                    ciclo: cmp [ebx],eax
+    59 0000005D 7E02                    		jng  sigue
+    60 0000005F 8B03                    		mov eax,[ebx]
+    61 00000061 83C304                  sigue:add ebx,4
+    62 00000064 49                      dec ecx
+    63 00000065 75F4                    jnz ciclo
+    64 00000067 5D                      pop ebp
+    65 00000068 C3                      ret 

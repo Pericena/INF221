@@ -1,0 +1,29 @@
+     1                                  
+     2                                  
+     3                                  segment .data
+     4 00000000 100008000500010006-       v dw 16,8,5,1,6,9
+     5 00000009 000900             
+     6 0000000C 06                        longitud db 6 
+     7 0000000D 02                        k db 2
+     8                                    segment .text 
+     9                                    global _main 
+    10                                    
+    11                                    _main:
+    12 00000000 B901000000                 mov  ecx,1
+    13 00000005 8A1D[0D000000]             mov bl,[k]
+    14                                     
+    15 0000000B 3A0D[0C000000]             ciclo: cmp  cl,[longitud]
+    16 00000011 7319                              jae salir 
+    17 00000013 668B8409[00000000]      		  mov ax,[v+ecx*2];tipo word 2
+    18 0000001B F6F3                    		  div  bl 
+    19 0000001D 6698                    		  cbw ;extendido a word 
+    20                                  		 
+    21 0000001F 66898409[00000000]      		  mov [v+ecx*2],ax		  
+    22                                  		  
+    23                                  		  
+    24                                  		  
+    25 00000027 83C102                  	       add ecx ,2
+    26 0000002A EBDF                    		   jmp ciclo
+    27                                  		   
+    28                                  		  salir:   
+    29 0000002C C3                      ret 

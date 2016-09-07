@@ -1,0 +1,5 @@
+DEBO ESTUDIAR MAS PARA OBTENER BUENA NOTA EN EL PARCIAL
+N=15
+Hay 46 Letras
+el char 15 es "A"
+La palabra es "NOTA"

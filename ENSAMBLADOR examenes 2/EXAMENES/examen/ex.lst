@@ -1,0 +1,41 @@
+     1                                  
+     2                                  ;%%%%%%%%%%%%%%%%%%%%%%%
+     3                                  ;assemble and link with 
+     4                                  ;nasm -f win32 -o ejemplo.o ejemplo.asm
+     5                                  ;gcc -o ejemplo.exe ejemplo.o
+     6                                  ;%%%%%%%%%%%%%%%%%%%%%%%
+     7                                  ;---------------------------------------
+     8                                  
+     9                                  ;file: hola.asm
+    10                                  
+    11                                  extern _printf, _scanf		
+    12                                  
+    13                                  segment .data
+    14 00000000 100008000F00010006-     		V dw 16,8,15,1,6,9
+    15 00000009 000900             
+    16 0000000C 02                      		k db 2
+    17                                  segment .bss
+    18                                  
+    19                                  segment .text 
+    20                                  
+    21                                  global _main 					
+    22                                  _main:
+    23                                  ;---------------------------------------	
+    24 00000000 31C9                    		xor ecx,ecx
+    25 00000002 31C0                    		xor eax,eax
+    26 00000004 B901000000              		mov ecx,1
+    27 00000009 80F906                  for:	cmp cl,6
+    28 0000000C 731C                    		jae fin			;si cl es >=a 6
+    29 0000000E 668B8409[00000000]      		mov ax,[V + ecx * 2]
+    30 00000016 6698                    		cbw
+    31 00000018 F635[0C000000]          		div byte[k]
+    32 0000001E 888409[00000000]        		mov[V + ecx*2],al
+    33 00000025 83C102                  		add ecx,2
+    34 00000028 EBDF                    jmp for
+    35 0000002A C3                      fin: ret
+    36                                  ;---------------------------------------
+    37                                  ;..........subrutina....................	
+    38                                  
+    39                                  
+    40                                  
+    41                                  
