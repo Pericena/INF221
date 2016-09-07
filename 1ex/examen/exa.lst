@@ -1,0 +1,35 @@
+     1                                  ;nasm -f win32 -o exa.o exa.asm -l exa.lst
+     2                                  ;gcc -o exa.exe exa.o
+     3                                  ;%%%%%%%%%%%%%%%%%%%%%%%
+     4                                  ;file: P2E1a.asm
+     5                                  
+     6                                  extern _printf, _scanf		
+     7                                  
+     8                                  segment .data
+     9 00000000 2E0032005500540311-     	v dw 46,50,85,852,785,451,365
+    10 00000009 03C3016D01         
+    11 0000000E 07                      	n db 7
+    12                                  	
+    13                                  segment .bss
+    14 00000000 <res 00000002>          	suma resw  1
+    15                                  segment .text 
+    16                                  
+    17                                  global _main 					
+    18                                  _main:
+    19                                  ;---------------------------------------	
+    20 00000000 31C9                    		xor ecx,ecx
+    21                                  		
+    22 00000002 3A0D[0E000000]          ciclo:	cmp cl,[n]
+    23 00000008 7422                    		jz salir
+    24 0000000A 668B8409[00000000]      		mov ax,[v+ecx*2]
+    25 00000012 6683F831                		cmp ax,49
+    26 00000016 7902                    		jns sumar
+    27 00000018 EB0D                    		jmp incre
+    28 0000001A 6683F863                sumar:	cmp ax,99
+    29 0000001E 7907                    		jns incre
+    30 00000020 660105[00000000]        		add [suma],ax
+    31                                  		
+    32 00000027 80C101                  incre:	add cl,1
+    33 0000002A EBD6                    		jmp ciclo
+    34                                  salir: 
+    35 0000002C C3                      ret

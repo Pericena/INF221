@@ -1,0 +1,148 @@
+Turbo Assembler	 Version 3.2	    12/03/09 20:23:33	    Page 1
+PREGUN~1.ASM
+
+
+
+      1	0000			     .MODEL small
+      2	0000			     .STACK 100h
+      3
+      4	0000			     .DATA
+      5	0000  49 6E 67 72 65 73	61+  inv1    DB	 'Ingresa un texto (entre 40 y 80 char)',10,13,'$'
+      6	      20 75 6E 20 74 65	78+
+      7	      74 6F 20 28 65 6E	74+
+      8	      72 65 20 34 30 20	79+
+      9	      20 38 30 20 63 68	61+
+     10	      72 29 0A 0D 24
+     11	0028  49 6E 67 72 65 73	61+  inv2    DB	 'Ingresa un numero (entre 10 y	40)',10,13,'$'
+     12	      20 75 6E 20 6E 75	6D+
+     13	      65 72 6F 20 28 65	6E+
+     14	      74 72 65 20 31 30	20+
+     15	      79 20 34 30 29 0A	0D+
+     16	      24
+     17	004C  0A 0D 20 23 20 64	65+  sal1    DB	 10,13,' # de letras','$'
+     18	      20 6C 65 74 72 61	73+
+     19	      24
+     20	005B  0A 0D 45 6C 20 63	61+  sal2    DB	 10,13,'El caracter es:	','$'
+     21	      72 61 63 74 65 72	20+
+     22	      65 73 3A 20 24
+     23	006E  0A 0D 4C 61 20 70	61+  sal3    DB	 10,13,'La palabra es: ','$'
+     24	      6C 61 62 72 61 20	65+
+     25	      73 3A 20 24
+     26	0080  51 ?? 51*(??)	     texto   DB	 81,?,81 DUP(?)
+     27	00D3  ??		     N	     DB	?
+     28	00D4			     .CODE
+     29	0000  B8 0000s				     MOV AX,@DATA  ;DEFECTO
+     30	0003  8E D8				     MOV DS,AX	   ;DEFECTO
+     31	0005  B4 09				     MOV AH,9h
+     32	0007  BA 0000r				     LEA DX,inv1
+     33	000A  CD 21				     INT 21h ; MUESTRA inv1 EN PANTALLA
+     34	000C  B4 10				     MOV AH,10h
+     35	000E  BA 0080r				     LEA DX,texto
+     36	0011  CD 21				     INT 21h ; CAPTURA texto
+     37	0013  B4 09				     MOV AH,9h
+     38	0015  BA 0028r				     LEA DX,inv2
+     39	0018  CD 21				     INT 21h ; EMITE inv2
+     40	001A  B4 01				     MOV AH,1h
+     41	001C  CD 21				     INT 21h
+     42	001E  2C 30				     SUB AL,30h
+     43	0020  8A F8				     MOV BH,AL
+     44	0022  CD 21				     INT 21h ; CAPTURA UNIDAD DE N
+     45	0024  2C 30				     SUB AL,30h
+     46	0026  8A E7				     MOV AH,BH
+     47	0028  D5 0A				     AAD ; AL =	N (DIM)
+     48	002A  A2 00D3r				     MOV N,AL
+     49	002D  B1 00				     MOV CL,0 ;CONTADOR
+     50	002F  BB 0080r				     LEA BX,texto
+     51	0032  8A 6F 01				     MOV CH,[BX+1] ; texto +1 ,	# DE CHAR
+     52	0035  8A 47 02				     MOV AL,[BX+2] ; LEE UN CHAR
+     53	0038  3C 41				     CMP AL,'A'
+     54	003A  72 06				     JC	 otro  ; CHAR NO ES LETRA
+     55	003C  3C 5A				     CMP AL,'Z'
+     56	003E  73 02				     JNC otro ;	NO ES LETRA
+     57	0040  FE C1		     es_letra:	     INC CL
+Turbo Assembler	 Version 3.2	    12/03/09 20:23:33	    Page 2
+PREGUN~1.ASM
+
+
+
+     58	0042  43		     otro:	     INC BX
+     59	0043  FE CD				     DEC CH
+     60	0045  75 1F				     JNZ leer_char     ; LEER CHAR
+     61	0047  8A C1				     MOV AL,CL
+     62	0049  32 E4				     XOR AH,AH
+     63	004B  D4 0A				     AAM ; AH =	DECENA	AL = UNIDAD
+     64	004D  05 3030				     ADD AX,3030h ;AX =	# DE LETRAS (ASCII)
+     65	0050  8B D8				     MOV BX,AX
+     66	0052  B4 02				     MOV AH,2h
+     67	0054  8A D7				     MOV DL,BH
+     68	0056  CD 21				     INT 21h ; EMITE DECENA
+     69	0058  8A D3				     MOV DL,BL
+     70	005A  CD 21				     INT 21h ;EMITE UNIDAD
+     71	005C  BB 0080r				     LEA BX,texto
+     72	005F  A0 00D3r				     MOV AL,N ;	AX = N
+     73	0062  32 E4				     XOR AH,AH
+     74	0064  03 D8				     ADD BX,AX
+     75	0066  8A 47 02		     leer_char:	     MOV AL,[BX+2] ; AL	= EL CHAR N
+     76	0069  8A D0				     MOV DL,AL
+     77	006B  B4 02				     MOV AH,2h
+     78	006D  CD 21				     INT 21h
+     79	006F  8A 47 02		     Palabra:	     MOV AL,[BX+2]
+     80	0072  3C 20				     CMP AL,' '
+     81	0074  74 03				     JE	 exit
+     82	0076  4B				     DEC BX
+     83	0077  7B F6				     JNP Palabra
+     84	0079  B4 02		     exit:	     MOV AH,2h
+     85	007B  8A 57 03				     MOV DL,[BX+3]
+     86	007E  CD 21				     INT 21h
+     87	0080  43				     INC BX
+     88	0081  8A 57 03				     MOV DL,[BX+3]
+     89	0084  80 FA 24				     CMP DL,'$'
+     90	0087  75 F0				     JNE exit
+     91	0089  B4 4C				     MOV AH,4ch	;DEFECTO
+     92	008B  CD 21				     INT 21h	;DEFECTO
+     93
+     94				     END
+Turbo Assembler	 Version 3.2	    12/03/09 20:23:33	    Page 3
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/03/09"
+??FILENAME			  Text	 "PREGUN~1"
+??TIME				  Text	 "20:23:33"
+??VERSION			  Number 0314
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 PREGUN~1
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+ES_LETRA			  Near	 _TEXT:0040
+EXIT				  Near	 _TEXT:0079
+INV1				  Byte	 DGROUP:0000
+INV2				  Byte	 DGROUP:0028
+LEER_CHAR			  Near	 _TEXT:0066
+N				  Byte	 DGROUP:00D3
+OTRO				  Near	 _TEXT:0042
+PALABRA				  Near	 _TEXT:006F
+SAL1				  Byte	 DGROUP:004C
+SAL2				  Byte	 DGROUP:005B
+SAL3				  Byte	 DGROUP:006E
+TEXTO				  Byte	 DGROUP:0080
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  00D4 Word	  Public  DATA
+_TEXT				  16  008D Word	  Public  CODE
+

@@ -1,0 +1,47 @@
+     1                                  
+     2                                  ;%%%%%%%%%%%%%%%%%%%%%%%
+     3                                  ;assemble and link with 
+     4                                  ;nasm -f win32 -o P1.o P1.asm -l P1.lst
+     5                                  ;gcc -o P1.exe P1.o
+     6                                  ;%%%%%%%%%%%%%%%%%%%%%%%
+     7                                  ;---------------------------------------
+     8                                  
+     9                                  ;file:  P1.asm
+    10                                  
+    11                                  extern _printf, _scanf		
+    12                                  
+    13                                  segment .data
+    14 00000000 80FFC9FF32FF53000A-     		vec dw -128,-55,-206,83,10,-57,35,99,-100,267,313,967
+    15 00000009 00C7FF230063009CFF-
+    16 00000012 0B013901C703       
+    17 00000018 0C                      		tam db  12
+    18                                  segment .bss
+    19                                  
+    20 00000000 <res 00000002>          		promedio resw 1
+    21                                  
+    22                                  segment .text 
+    23                                  
+    24                                  global _main 					
+    25                                  _main:
+    26                                  ;---------------------------------------	
+    27 00000000 31C0                    		xor eax,eax
+    28 00000002 31DB                    		xor ebx,ebx
+    29 00000004 31C9                    		xor ecx,ecx
+    30 00000006 31D2                    		xor edx,edx
+    31                                  		
+    32 00000008 3A0D[18000000]          incre:cmp cl,[tam]
+    33 0000000E 7410                    		jz prom
+    34 00000010 668B9C09[00000000]      		mov bx,[vec+ecx*2]
+    35 00000018 6601D8                  		add ax,bx
+    36 0000001B 80C101                  		add cl,1
+    37 0000001E EBE8                    		jmp incre
+    38                                  
+    39 00000020 66F7F9                  	prom:idiv cx
+    40 00000023 A2[00000000]            		 mov [promedio],al
+    41 00000028 C3                      fin: ret
+    42                                  ;---------------------------------------
+    43                                  ;..........subrutina....................	
+    44                                  
+    45                                  
+    46                                  
+    47                                  

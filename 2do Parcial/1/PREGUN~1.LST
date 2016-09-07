@@ -1,0 +1,71 @@
+Turbo Assembler	 Version 3.2	    12/03/09 19:35:10	    Page 1
+PREGUN~1.ASM
+
+
+
+      1	0000			     .MODEL small
+      2	0000			     .STACK 100h
+      3
+      4	0000			     .DATA
+      5	0000  0A 0D		     uno     DB	 10,13
+      6	0002  0C*(14)		     dos     DB	 12 DUP(20)
+      7	000E			     .CODE
+      8	0000  B8 0000s		     inicio: MOV AX,@DATA
+      9	0003  8E D8			     MOV DS,AX
+     10	0005  BB 0002r			     LEA BX,dos
+     11	0008  8B D3			     MOV DX,BX
+     12	000A  BE 0400			     MOV SI,400h
+     13	000D  B9 0303			     MOV CX,0303h
+     14	0010  8A 07		     tres:   MOV AL,[BX]
+     15	0012  D0 E0			     SHL AL,1h
+     16	0014  02 C5			     ADD AL,CH
+     17	0016  88 04			     MOV [SI],AL
+     18	0018  88 07			     MOV[BX],AL
+     19	001A  43			     INC BX
+     20	001B  46			     INC SI
+     21	001C  FE C5			     INC CH
+     22	001E  FE C9			     DEC CL
+     23	0020  75 EE			     JNZ tres
+     24	0022  B0 24			     MOV AL,'$'
+     25	0024  88 47 02			     MOV[BX+2],AL
+     26	0027  B4 09			     MOV AH,9h
+     27	0029  CD 21			     INT 21h
+     28	002B  B4 4C			     MOV AH,4Ch
+     29	002D  CD 21			     INT 21h
+     30				     END     inicio
+Turbo Assembler	 Version 3.2	    12/03/09 19:35:10	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "12/03/09"
+??FILENAME			  Text	 "PREGUN~1"
+??TIME				  Text	 "19:35:10"
+??VERSION			  Number 0314
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 PREGUN~1
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+DOS				  Byte	 DGROUP:0002
+INICIO				  Near	 _TEXT:0000
+TRES				  Near	 _TEXT:0010
+UNO				  Byte	 DGROUP:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  000E Word	  Public  DATA
+_TEXT				  16  002F Word	  Public  CODE
+
