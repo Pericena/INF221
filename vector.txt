@@ -1,0 +1,106 @@
+;%%%%%%%%%%%%%%%%%%%%%%%
+;assemble and link with 
+;nasm -f win32 -o ARREGLOS.o ARREGLOS.asm
+;gcc -o ARREGLOS.exe ARREGLOS.o
+;%%%%%%%%%%%%%%%%%%%%%%%
+;---------------------------------------
+
+;file: hola.asm
+
+extern _printf, _scanf		
+
+segment .data
+	msj1	DB	"Ingrese la longitud de arreglo: ",0
+	msj2	DB	"V[%d] = ",0
+	msj3	DB	"La promedio de los elementos al cuadrado del arreglo es: %d",10,0
+	formato	DB  "%d",0
+segment .bss
+	arreglo		RESD	100
+	longitud	RESD	1
+segment .text 
+
+global _main 					
+_main:
+;---------------------------------------	
+	; MOSTRAR PEDIDO DE LONGITUD
+	PUSH msj1
+	CALL _printf
+	ADD ESP,4
+	
+	; OBTENIENDO LA LONGITUD
+	PUSH longitud
+	PUSH formato
+	CALL _scanf
+	ADD ESP,8
+	
+	XOR EBX,EBX	; CONTADOR
+	MOV ESI, [longitud]	; LONGITUD DEL ARREGLO
+	MOV EDI, arreglo ;DIRECCION DE LOS ELEMENTOS DEL ARREGLO
+	
+	;CICLO PARA CAPTURAR LOS VALORES
+ciclo:
+	PUSH EBX
+	PUSH msj2
+	CALL _printf
+	ADD ESP,8
+	
+	PUSH EDI
+	PUSH formato
+	CALL _scanf
+	ADD ESP,8
+	
+	INC EBX
+	ADD EDI,4
+	CMP EBX,ESI
+	JNE ciclo
+	
+	;LLAMAR A LA SUBRUTINA
+	
+	PUSH arreglo
+	PUSH dword[longitud]
+	CALL promedioCuadrado
+	ADD ESP, 8
+	
+	MOV EBX, EAX ; Resultado de la subrutina
+	
+	PUSH EBX
+	PUSH msj3
+	CALL _printf
+	ADD ESP, 8
+	
+	
+ret
+;---------------------------------------
+;..........subrutina....................	
+promedioCuadrado:
+		;Prologo
+		PUSH EBP
+		MOV EBP, ESP
+		
+		MOV ESI, [EBP + 12]; DIR ARREGLO
+		MOV ECX, [EBP + 8]; LONGUITUD ARREGLO
+		
+		;CICLO DE LA SUBRUTINO
+		XOR EAX, EAX 
+		XOR EBX, EBX ;CONTADOR
+		XOR EDI, EDI
+	
+	ciclo2:
+		MOV EAX, [ESI]
+		MOV EDX, EAX
+		IMUL EDX
+		ADD EDI, EAX
+		
+		INC EBX
+		ADD ESI, 4
+		CMP EBX, ECX
+		JNE ciclo2
+		
+		MOV EAX, EDI
+		CDQ
+		IDIV ECX
+		
+		;Epilogo
+		MOV ESP, EBP
+		POP EBP ;LEAVE
+		RET

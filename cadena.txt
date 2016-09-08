@@ -1,0 +1,88 @@
+;%%%%%%%%%%%%%%%%%%%%%%%
+;assemble and link with 
+;nasm -f win32 -o cadenaExamen.o cadenaExamen.asm
+;gcc -o cadenaExamen.exe cadenaExamen.o
+;%%%%%%%%%%%%%%%%%%%%%%%
+;---------------------------------------
+
+;file: hola.asm
+
+extern _printf, _scanf, _gets	
+
+segment .data
+msj1 DB	"Introducir una cadena: ",0
+msj2 DB "La cadena convertida es: %s",10,0
+formato DB "%s",0
+		
+segment .bss
+cadena RESB 100
+cadena2	RESB 100
+segment .text 
+
+global _main 					
+_main:
+;---------------------------------------	
+
+PUSH msj1
+CALL _printf
+ADD ESP,4
+
+PUSH cadena
+CALL _gets
+ADD ESP, 4
+
+XOR ECX,ECX
+MOV ESI, cadena
+
+ciclo:
+MOV BL, [ESI]
+INC ECX
+INC ESI
+CMP BL, 0x00
+JNE ciclo
+
+DEC ECX; lONGITUD DE CADENA
+
+PUSH ECX
+PUSH cadena
+PUSH cadena2
+CALL convertir
+ADD ESP, 12
+
+PUSH cadena2
+PUSH msj2
+CALL _printf
+ADD ESP, 8
+
+ret
+;---------------------------------------
+;..........subrutina....................	
+convertir:
+	;epilogo
+	PUSH EBP
+	MOV EBP, ESP
+	
+	MOV ECX, [EBP + 16]; LONGITUD CADENA
+	MOV EDI, [EBP + 12]; CADENA FUENTE
+	MOV ESI, [EBP + 8]; CADENA RESULTADO
+
+	XOR EAX, EAX; CONTADOR
+ciclo2:
+	MOV BL, [EDI]
+	CMP BL, 0x20
+	JE espacio
+	XOR BL, 0x20
+	espacio:
+	MOV [ESI], BL
+	INC EDI
+	INC ESI
+	INC EAX
+	CMP EAX, ECX
+	JNE ciclo2
+	
+	;PROLOGO
+	MOV ESP, EBP
+	POP EBP
+	RET
+
+

@@ -1,0 +1,14 @@
+PROGRAMA DE INICIO DE SESION:
+Cifrado: se resta x0C
+Numero de usuarios menor a 0x100
+La tabla termina en 0x00000000
+El puntero de los usuarios comienzan en 0x00402000
+La direccion de memoria 0x00402010 contiene 0x00000000 que es el puntero final
+Los usuarios comienzan en 0x00402014
+Los usuarios/contraseñas(encriptadas) se guardan de manera continia pero con separacion de 0x00
+Longitud de cadena de usuario entre 4 a 10 caracteres
+Longitud de cadena de contraseña entre 6 a 10 caracteres
+Usuario o contraseña incorrecta
+Invalid UserID/password. Your login failed.
+usuario correcto
+<usuario>, you have successfully logged in.
